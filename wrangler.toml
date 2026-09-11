@@ -1,3 +1,7 @@
+workers_dev = true
+preview_urls = false
+
+
 name = "inkstone"
 main = "src/worker/index.ts"
 compatibility_date = "2026-05-01"
