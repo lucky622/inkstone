@@ -1,0 +1,26 @@
+name: Sync Upstream & Auto Deploy
+
+on:
+  schedule:
+    # 每天 UTC 0 點（北京/台北時間上午 8 點）自動檢查同步
+    - cron: '0 0 * * *'
+  workflow_dispatch: # 支援手動隨時點擊運行
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Sync with Upstream
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git remote add upstream https://github.com/shuaiplus/inkstone.git
+          git fetch upstream main
+          git merge upstream/main --ff-only || git merge upstream/main -m "chore: sync upstream changes"
+          git push origin main
